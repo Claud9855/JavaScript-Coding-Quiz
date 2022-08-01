@@ -9,7 +9,7 @@
 }
 
 body {
-    font-family: fantasy, Arial, Helvetica, sans-serif;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     line-height: 1.5;
     font-size: 1.3rem;
     background-color: var(--main-lightblue);   

@@ -3,7 +3,7 @@ var displayResultEl = document.getElementById('display-result');
 var viewHighScoreEl = document.getElementById('view-high-score');
 var startingBtnEl = document.getElementById('starting-btn');
 
-var timer = 10;
+var timer = 75;
 
 startingBtnEl.addEventListener('click', function() {
     countdownTimer();
@@ -11,8 +11,7 @@ startingBtnEl.addEventListener('click', function() {
     homePage.setAttribute('style', 'display: none;');
     quizEl.setAttribute('style', 'display: flex;');
     setupQuestion();
-    var collections = document.getElementsByClassName('question');
-    collections[2].setAttribute('style', 'display: block;');
+    displayFirstQuestion();
     
 });
 
@@ -35,7 +34,16 @@ var quizSheet = {
     answers: [3, 3, 4, 3, 4],
     result: 0,
     correctCounter: 0,
-    incorrectCounter: 0
+    incorrectCounter: 0,
+
+    increaseCounter: function(){
+        ++this.correctCounter;
+    },
+
+    decreaseIncorrectCounter: function(){
+        ++this.incorrectCounter;
+    }
+
 };
 
 var scores = {
@@ -64,6 +72,7 @@ function setupQuestion() {
     for(var i = 0; i < questionCollections; i++){
         var questionEl = document.createElement('div');
         questionEl.setAttribute('class', 'question');
+        questionEl.setAttribute('data-state', 'hidden');
         var questionHeaderEl = document.createElement('div');
         questionHeaderEl.setAttribute('class', 'question-header');
         var questionBodyEl = document.createElement('div');
@@ -74,6 +83,7 @@ function setupQuestion() {
             var inputEl = document.createElement('input');
             inputEl.setAttribute('type', 'button');
             inputEl.setAttribute('class', 'choice-btn');
+            inputEl.setAttribute('data-number', j+1);
             inputEl.setAttribute('value', quizSheet.choices[i][j]);
 
             questionBodyEl.append(inputEl);
@@ -84,5 +94,57 @@ function setupQuestion() {
 
     }
 
+}
+
+var i = 0;
+quizEl.addEventListener('click', function(event){
+        var element = event.target;
+        var result = document.getElementById('display-result');
+        var questions = document.getElementsByClassName('question');
+
+        
+        console.log(i);
+        console.log(quizSheet.correctCounter + " -");
+        if(element.matches('input')){
+            var dataNumber = element.getAttribute('data-number');
+            if(i === quizSheet.questions.length-1){
+                alert('Quiz is over!');
+            }
+            else if(dataNumber == quizSheet.answers[i++]){
+                result.innerHTML = '<h1>Correct</h1>';
+                result.style.display = 'flex';
+                quizSheet.increaseCounter();
+            }
+            else{
+                result.innerHTML = '<h1>Wrong</h1>'
+                result.style.display = 'flex';
+                quizSheet.decreaseIncorrectCounter();
+                timer -= 10;
+            }
+
+            var state = questions[i].getAttribute('data-state');
+            if(state === 'hidden'){
+                questions[i].setAttribute('data-state', 'visible');
+                questions[i].setAttribute('style', 'display: block;');
+                questions[i-1].setAttribute('data-state', 'hidden');
+                questions[i-1].setAttribute('style', 'display: none;');
+            }
+        }
+
+        
+
+        
+    });
+
+
+function displayFirstQuestion(){
+    var question = document.getElementsByClassName('question')[0];
+
+    var state = question.getAttribute('data-state');
+    if(state === 'hidden'){
+        question.setAttribute('data-state', 'visible');
+        question.setAttribute('style', "display: block");
+    }
+   
 }
 
