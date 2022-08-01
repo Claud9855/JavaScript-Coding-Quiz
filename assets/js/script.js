@@ -6,28 +6,29 @@ var startingBtnEl = document.getElementById('starting-btn');
 var timer = 10;
 
 startingBtnEl.addEventListener('click', function() {
+    countdownTimer();
     var homePage = document.querySelector('.home-page');
     homePage.setAttribute('style', 'display: none;');
+    quizEl.setAttribute('style', 'display: flex;');
     setupQuestion();
-    quizEl.setAttribute('style', 'display: flex;')
     var collections = document.getElementsByClassName('question');
-    collections[1].setAttribute('style', 'display: block;');
-    var timerCountdown =  setInterval(countdownTimer, 1000);
+    collections[2].setAttribute('style', 'display: block;');
+    
 });
 
 
 var quizSheet = {
     questions: [
-        "Commonly used data types DO Not include:",
-        "The condition in an if / else statement is enclosed with ____________.",
-        "Arrays in JavaScript can be used to store ___________.",
-        "String values must be enclosed within ___________ when being assigned to variables.",
-        "A very useful tool used during development and debugging for printing content to debugger is:"
+        "<h3>Commonly used data types DO Not include:</h3>",
+        "<h3>The condition in an if / else statement is enclosed with<hr class='underline'/> .</h3>",
+        "<h3>Arrays in JavaScript can be used to store <hr class='underline'/> .</h3>",
+        "<h3>String values must be enclosed within <hr class='underline'/> when being assigned to variables.</h3>",
+        "<h3>A very useful tool used during development and debugging for printing content to debugger is:</h3>"
     ],
     choices: [
         ["strings", "booleans", "alerts", "numbers"],
         ["quotes", "curly bracket", "parenthesis", "square brackets"],
-        ["numbers and strings", "other arrays", "booleans", "all of the above"],
+        ["numbers and\nstrings", "other arrays", "booleans", "all of the above"],
         ["commas", "curly brackets", "quotes", " parenthesis"],
         ["JavaScript", "terminal/bash", "for loops", "console.log"]
     ],
@@ -47,10 +48,14 @@ var userResult = {
 };
 
 function countdownTimer() {
-    timer--;
-    var displayTimer = document.getElementById('timer-display');
-    displayTimer.textContent = timer;
-    
+        var timerCountdown = setInterval(function() {
+        var displayTimer = document.getElementById('timer-display');
+        displayTimer.textContent = timer;
+        if(timer === 0){
+            clearInterval(timerCountdown);
+        }
+        timer--;
+    }, 1000);
 }
 
 function setupQuestion() {
@@ -63,11 +68,8 @@ function setupQuestion() {
         questionHeaderEl.setAttribute('class', 'question-header');
         var questionBodyEl = document.createElement('div');
         questionBodyEl.setAttribute('class', 'question-body');
-        questionHeaderEl.textContent = quizSheet.questions[i];
-
+        questionHeaderEl.innerHTML = quizSheet.questions[i];
         
-        
-
         for(var j = 0; j < quizSheet.choices[i].length; j++){
             var inputEl = document.createElement('input');
             inputEl.setAttribute('type', 'button');
@@ -76,6 +78,7 @@ function setupQuestion() {
 
             questionBodyEl.append(inputEl);
         }
+
         questionEl.append(questionHeaderEl, questionBodyEl);
         quizEl.append(questionEl);
 
