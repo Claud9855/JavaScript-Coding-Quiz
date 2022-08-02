@@ -5,9 +5,9 @@ var viewHighScoreEl = document.getElementById('view-high-score');
 var startingBtnEl = document.getElementById('starting-btn');
 
 var timer = 75;
-var countdown = null;
+
 startingBtnEl.addEventListener('click', function() {
-    countdown = countdownTimer();
+    countdownTimer();
     var homePage = document.querySelector('.home-page');
     homePage.setAttribute('style', 'display: none;');
     quizEl.setAttribute('style', 'display: flex;');
@@ -50,8 +50,9 @@ var userResult = {
     score: 0
 };
 
+var timerCountdown;
 function countdownTimer() {
-        var timerCountdown = setInterval(function() {
+        timerCountdown = setInterval(function() {
         var displayTimer = document.getElementById('timer-display');
         displayTimer.textContent = timer;
         if(timer === 0){
@@ -111,10 +112,10 @@ quizEl.addEventListener('click', function(event){
 
             if(i === quizSheet.questions.length){
                 alert('Quiz is over!');
+                clearInterval(timerCountdown);
                 calculateResult();
                 quizEl.setAttribute('style', 'display: none');
                 viewResultEl.setAttribute('style', 'display: block;');
-                document.getElementsByTagName('header')[0].style.display = 'none';
                 document.getElementById('final-score').textContent = quizSheet.result;
                 return;
             }
