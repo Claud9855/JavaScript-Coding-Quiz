@@ -1,4 +1,9 @@
-# JavaScript Coding Challenge
+# JavaScript Coding Challenge-INCOMPLETE
+
+## Log
+-------
+- site is incomplete
+- more features will be added
 
 ## Description
 -------------- 
