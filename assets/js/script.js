@@ -1,5 +1,6 @@
 var quizEl = document.getElementById('quiz');
 var displayResultEl = document.getElementById('display-result');
+var viewResultEl = document.getElementById('view-result');
 var viewHighScoreEl = document.getElementById('view-high-score');
 var startingBtnEl = document.getElementById('starting-btn');
 
@@ -11,6 +12,7 @@ startingBtnEl.addEventListener('click', function() {
     homePage.setAttribute('style', 'display: none;');
     quizEl.setAttribute('style', 'display: flex;');
     setupQuestion();
+    setupViewResult();
     displayFirstQuestion();
     
 });
@@ -109,6 +111,9 @@ quizEl.addEventListener('click', function(event){
             var dataNumber = element.getAttribute('data-number');
             if(i === quizSheet.questions.length-1){
                 alert('Quiz is over!');
+                
+                quizEl.setAttribute('style', 'display: none');
+                viewResultEl.setAttribute('style', 'display: block;');
             }
             else if(dataNumber == quizSheet.answers[i++]){
                 result.innerHTML = '<h1>Correct</h1>';
@@ -146,5 +151,26 @@ function displayFirstQuestion(){
         question.setAttribute('style', "display: block");
     }
    
+}
+
+function setupViewResult(){
+    var heading = document.createElement('h1');
+    heading.textContent = 'All Done!';
+    var paragraph = document.createElement('p');
+    paragraph.innerHTML = 'Your final score is <span id="final-score">0</span>';
+    var label = document.createElement('label');
+    label.textContent = 'Enter initials:'
+    label.setAttribute('for', 'initials');
+    var textField = document.createElement('input');
+    textField.setAttribute('type','text');
+    textField.setAttribute('name', 'initials');
+    var button = document.createElement('input');
+    button.setAttribute('type', 'button');
+    button.setAttribute('class', 'view-result-btn');
+    button.setAttribute('value', 'Submit');
+
+    viewResultEl.append(heading, paragraph);
+    viewResultEl.append(label, textField);
+    viewResultEl.append(button);
 }
 

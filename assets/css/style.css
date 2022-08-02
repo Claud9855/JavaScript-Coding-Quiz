@@ -103,6 +103,19 @@ hr.underline {
     display: none;
 }
 
+input[type='text'] {
+    margin-left: 10px;
+}
+
+.view-result-btn{
+    position: relative;
+    left: 285px;
+    top: 15px;
+    padding: 5px;
+    background-color: var(--main-hotpink);
+    color: var(--main-lightblue);
+}
+
 .choice-btn {
     background-color: var(--main-hotpink);
     color: var(--main-lightblue);
