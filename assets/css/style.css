@@ -105,6 +105,7 @@ hr.underline {
 
 input[type='text'] {
     margin-left: 10px;
+    text-transform: uppercase;
 }
 
 .view-result-btn{
