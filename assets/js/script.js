@@ -5,9 +5,9 @@ var viewHighScoreEl = document.getElementById('view-high-score');
 var startingBtnEl = document.getElementById('starting-btn');
 
 var timer = 75;
-
+var countdown = null;
 startingBtnEl.addEventListener('click', function() {
-    countdownTimer();
+    countdown = countdownTimer();
     var homePage = document.querySelector('.home-page');
     homePage.setAttribute('style', 'display: none;');
     quizEl.setAttribute('style', 'display: flex;');
@@ -36,16 +36,9 @@ var quizSheet = {
     answers: [3, 3, 4, 3, 4],
     result: 0,
     correctCounter: 0,
-    incorrectCounter: 0,
-
     increaseCounter: function(){
         ++this.correctCounter;
-    },
-
-    decreaseIncorrectCounter: function(){
-        ++this.incorrectCounter;
     }
-
 };
 
 var scores = {
@@ -101,30 +94,29 @@ function setupQuestion() {
 var i = 0;
 quizEl.addEventListener('click', function(event){
         var element = event.target;
-        var result = document.getElementById('display-result');
         var questions = document.getElementsByClassName('question');
 
-        
-        console.log(i);
-        console.log(quizSheet.correctCounter + " -");
         if(element.matches('input')){
             var dataNumber = element.getAttribute('data-number');
-            if(i === quizSheet.questions.length-1){
-                alert('Quiz is over!');
-                
-                quizEl.setAttribute('style', 'display: none');
-                viewResultEl.setAttribute('style', 'display: block;');
-            }
-            else if(dataNumber == quizSheet.answers[i++]){
-                result.innerHTML = '<h1>Correct</h1>';
-                result.style.display = 'flex';
+            if(dataNumber == quizSheet.answers[i++]){
+                displayResultEl.innerHTML = '<h1>Correct</h1>';
+                displayResultEl.style.display = 'flex';
                 quizSheet.increaseCounter();
             }
             else{
-                result.innerHTML = '<h1>Wrong</h1>'
-                result.style.display = 'flex';
-                quizSheet.decreaseIncorrectCounter();
+                displayResultEl.innerHTML = '<h1>Wrong</h1>'
+                displayResultEl.style.display = 'flex';
                 timer -= 10;
+            }
+
+            if(i === quizSheet.questions.length){
+                alert('Quiz is over!');
+                calculateResult();
+                quizEl.setAttribute('style', 'display: none');
+                viewResultEl.setAttribute('style', 'display: block;');
+                document.getElementsByTagName('header')[0].style.display = 'none';
+                document.getElementById('final-score').textContent = quizSheet.result;
+                return;
             }
 
             var state = questions[i].getAttribute('data-state');
@@ -135,12 +127,7 @@ quizEl.addEventListener('click', function(event){
                 questions[i-1].setAttribute('style', 'display: none;');
             }
         }
-
-        
-
-        
     });
-
 
 function displayFirstQuestion(){
     var question = document.getElementsByClassName('question')[0];
@@ -152,6 +139,13 @@ function displayFirstQuestion(){
     }
    
 }
+
+function calculateResult(){
+    var correctCount = quizSheet.correctCounter;
+    var numberOfQuestions = quizSheet.questions.length;
+    quizSheet.result = Math.floor((correctCount / numberOfQuestions) * 100);
+}
+
 
 function setupViewResult(){
     var heading = document.createElement('h1');
@@ -169,8 +163,28 @@ function setupViewResult(){
     button.setAttribute('class', 'view-result-btn');
     button.setAttribute('value', 'Submit');
 
+    button.addEventListener('click', function(){
+        if(textField.value === ""){
+            alert("Textfield is empty! Please enter initials...");
+            return;
+        }
+        userResult.intitials = textField.value;
+        userResult.score = quizSheet.result;
+
+        scores.score.push([userResult.intitials, userResult.score]);
+
+        console.log(scores.score);
+});
+
     viewResultEl.append(heading, paragraph);
     viewResultEl.append(label, textField);
     viewResultEl.append(button);
+}
+
+
+
+function setupViewHighScore(){
+    var orderListEl = document.createElement('ol');
+    var listEl = document.createElement('li');
 }
 
