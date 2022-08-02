@@ -173,6 +173,8 @@ function setupViewResult(){
 
         scores.score.push([userResult.intitials, userResult.score]);
 
+        textField.value = "";
+
         console.log(scores.score);
 });
 
