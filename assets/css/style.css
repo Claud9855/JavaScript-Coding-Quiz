@@ -1,13 +1,15 @@
+/* variables to store the colors to be used */
 :root {
     --main-lightblue: #edf7f7;
     --main-hotpink: #e303fc;
     --main-black: #000000
 }
-
+/* selecting all elements */
 * {
     box-sizing: border-box;
 }
 
+/* element selectors */
 body {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     line-height: 1.5;
@@ -35,10 +37,16 @@ main {
     justify-content: center;
 }
 
+footer {
+    margin-bottom: 50px;
+}
+
+/* class selectors */
 .view-high-scores {
     color: var(--main-hotpink);
     flex: 50%;
     text-decoration: underline;
+    font-weight: bold;
 }
 
 .timer {
@@ -103,9 +111,6 @@ hr.underline {
 .scores-list {
     background-color: bisque;
 }
-#quiz {
-    display: none;
-}
 
 input[type='text'] {
     margin-left: 10px;
@@ -116,16 +121,42 @@ input[type='text'] {
     position: relative;
     left: 285px;
     top: 15px;
+    border-radius: 10px;
+    border: 2px solid var(--main-black);
     padding: 5px;
     background-color: var(--main-hotpink);
     color: var(--main-lightblue);
+    text-shadow: 5px 5px 10px var(--main-black);
+    box-shadow: 5px 5px 10px var(--main-black);
+}
+
+.view-result-btn:hover {
+    box-shadow: 5px 5px 10px var(--main-hotpink);
+    background-color: hsl(294, 96%, 40%);
+}
+
+.view-result-btn:active {
+    background-color: hsl(294, 99%, 29%);
 }
 
 .view-high-scores-btn {
     margin: 5px;
     padding: 5px;
+    border-radius: 10px;
+    border: 2px solid var(--main-black);
     background-color: var(--main-hotpink);
     color: var(--main-lightblue);
+    text-shadow: 5px 5px 10px var(--main-black);
+    box-shadow: 5px 5px 10px var(--main-black);
+}
+
+.view-high-scores-btn:hover {
+    box-shadow: 5px 5px 10px var(--main-hotpink);
+    background-color: hsl(294, 96%, 40%);
+}
+
+.view-high-scores-btn:active {
+    background-color: hsl(294, 99%, 29%);
 }
 
 .choice-btn {
@@ -148,4 +179,37 @@ input[type='text'] {
 
 .choice-btn:active {
     background-color: hsl(294, 99%, 29%);
+}
+
+/* id selector */
+#display-result {
+    justify-content: center;
+}
+
+#quiz {
+    display: none;
+}
+
+/* Responsive css rules */
+/* handles desktop */
+@media screen and (min-width: 998px) {
+    .view-result-btn {
+        left: 25px;
+        bottom: 0;
+        top: 0;
+    }
+    .choice-btn {
+        width: 35%;
+    }
+}
+
+/* handle small phones and tablets */
+@media screen and (min-width: 400px) {
+    .view-result-btn {
+        left: 5px;
+        bottom: 0;
+        top: 0;
+        
+    }
+
 }

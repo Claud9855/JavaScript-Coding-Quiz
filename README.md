@@ -1,9 +1,4 @@
-# JavaScript Coding Challenge-INCOMPLETE
-
-## Log
--------
-- site is incomplete
-- more features will be added
+# JavaScript Coding Challenge-COMPLETED
 
 ## Description
 -------------- 
@@ -13,7 +8,7 @@
 
 ## URL
 ------
-- copy and paste url: claud9855.github.io/JavaScript-Coding-Quiz/
+- copy and paste url: https://claud9855.github.io/JavaScript-Coding-Quiz/
 
 ## Screenshot
 -------------

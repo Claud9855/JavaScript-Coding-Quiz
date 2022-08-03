@@ -1,12 +1,14 @@
+// declared variables to be used in program
 var quizEl = document.getElementById('quiz');
 var displayResultEl = document.getElementById('display-result');
 var viewResultEl = document.getElementById('view-result');
 var viewHighScoreEl = document.getElementById('view-high-scores');
 var startingBtnEl = document.getElementById('starting-btn');
-
 var timer = 0;
+var index = 0;
+var timerCountdown;
 
-
+// object variables to store the property and behavior of the objects to be used in program
 var quizSheet = {
     questions: [
         "<h3>Commonly used data types DO Not include:</h3>",
@@ -35,7 +37,12 @@ var quizSheet = {
 };
 
 var scores = {
-    score: []
+    score: [],
+    sortScores: function(){
+        this.score.sort(function(a,b){
+            return a[1] - b[1];
+        }).reverse();
+    }
 };
 
 var userResult = {
@@ -43,7 +50,7 @@ var userResult = {
     score: 0
 };
 
-var timerCountdown;
+// function starts the timer
 function countdownTimer() {
         timerCountdown = setInterval(function() {
         var displayTimer = document.getElementById('timer-display');
@@ -55,6 +62,7 @@ function countdownTimer() {
     }, 1000);
 }
 
+// function setup question for the quiz
 function setupQuestion() {
     var questionCollections = quizSheet.questions.length;
 
@@ -85,50 +93,7 @@ function setupQuestion() {
 
 }
 
-var i = 0;
-quizEl.addEventListener('click', function(event){
-        var element = event.target;
-        var questions = document.getElementsByClassName('question');
-
-        if(element.matches('input')){
-            var dataNumber = element.getAttribute('data-number');
-            if(dataNumber == quizSheet.answers[i++]){
-                displayResultEl.innerHTML = '<h1>Correct</h1>';
-                displayResultEl.style.display = 'flex';
-                quizSheet.increaseCounter();
-            }
-            else{
-                displayResultEl.innerHTML = '<h1>Wrong</h1>'
-                displayResultEl.style.display = 'flex';
-                quizSheet.increaseIncorrectCounter();
-                timer -= 10;
-                if(quizOver()){
-                    alert("You used up all of your time! Quiz Over!");
-                }
-            }
-
-            if(i === quizSheet.questions.length){
-                alert('Quiz is over!');
-                clearInterval(timerCountdown);
-                calculateResult();
-                quizEl.setAttribute('style', 'display: none');
-                viewResultEl.setAttribute('style', 'display: block;');
-                questions[i-1].setAttribute('style', 'display: none');
-                document.getElementById('final-score').textContent = quizSheet.result;
-                i = 0;
-                return;
-            }
-
-            var state = questions[i].getAttribute('data-state');
-            if(state === 'hidden'){
-                questions[i].setAttribute('data-state', 'visible');
-                questions[i].setAttribute('style', 'display: block;');
-                questions[i-1].setAttribute('data-state', 'hidden');
-                questions[i-1].setAttribute('style', 'display: none;');
-            }
-        }
-    });
-
+// function finish the quiz if time ran out
 function quizOver(){
     if(timer <= 0){
         clearInterval(timerCountdown);
@@ -142,6 +107,7 @@ function quizOver(){
 
 }
 
+// function display the first question for the quiz
 function displayFirstQuestion(){
     var question = document.getElementsByClassName('question')[0];
 
@@ -153,6 +119,7 @@ function displayFirstQuestion(){
    
 }
 
+// function calculate result
 function calculateResult(){
     var correctCount = quizSheet.correctCounter;
     var incorrectCount = quizSheet.incorrectCounter;
@@ -173,7 +140,7 @@ function calculateResult(){
     }
 }
 
-
+// function setup the view result page for the quiz
 function setupViewResult(){
     var heading = document.createElement('h1');
     heading.textContent = 'All Done!';
@@ -199,6 +166,7 @@ function setupViewResult(){
         userResult.score = quizSheet.result;
 
         scores.score.push([userResult.intitials, userResult.score]);
+        scores.sortScores();
         localStorage.setItem('scores', JSON.stringify(scores));
 
         textField.value = "";
@@ -214,8 +182,7 @@ function setupViewResult(){
     viewResultEl.append(button);
 }
 
-
-
+// function setup the view high score page for the quiz
 function setupViewHighScore(){
     document.getElementsByTagName('header')[0].style.display = 'none';
     var heading = document.createElement('h1');
@@ -261,18 +228,15 @@ function setupViewHighScore(){
 
     clearHighScoreButton.addEventListener('click', function(){
         localStorage.clear();
-        for (var i = 0; i <= scores.score.length-1; i++){
-            for(var j = 0; j < Object.values('scoresList').values.length; j++){
-                scores.score.pop();
-            }   
-            
-        }
+        scores.score = [];
         orderListEl.innerHTML="";
     });
 
 }
 
+// added event listener to class name view-high-score to switch to view-high-score page
 document.getElementsByClassName('view-high-scores')[0].addEventListener('click', function(){
+    clearInterval(timerCountdown);
     quizEl.style.display = 'none';
     document.getElementsByClassName('home-page')[0].style.display = 'none';
     viewResultEl.style.display = 'none';
@@ -281,8 +245,10 @@ document.getElementsByClassName('view-high-scores')[0].addEventListener('click',
     setupViewHighScore();
 });
 
+// added event listener is home page button to start and setup the quiz
 startingBtnEl.addEventListener('click', function() {
     timer = 75;
+    index = 0;
     quizSheet.result = 0;
     quizSheet.correctCounter = 0;
     quizSheet.incorrectCounter = 0;
@@ -294,5 +260,49 @@ startingBtnEl.addEventListener('click', function() {
     setupViewResult();
     displayFirstQuestion();
     
+});
+
+// added event listener to quiz div element to handle the flow and logic of quiz
+quizEl.addEventListener('click', function(event){
+    var element = event.target;
+    var questions = document.getElementsByClassName('question');
+
+    if(element.matches('input')){
+        var dataNumber = element.getAttribute('data-number');
+        if(dataNumber == quizSheet.answers[index++]){
+            displayResultEl.innerHTML = '<h1>Correct</h1>';
+            displayResultEl.style.display = 'flex';
+            quizSheet.increaseCounter();
+        }
+        else{
+            displayResultEl.innerHTML = '<h1>Wrong</h1>'
+            displayResultEl.style.display = 'flex';
+            quizSheet.increaseIncorrectCounter();
+            timer -= 10;
+            if(quizOver()){
+                alert("You used up all of your time! Quiz Over!");
+            }
+        }
+
+        if(index === quizSheet.questions.length){
+            alert('Quiz is over!');
+            clearInterval(timerCountdown);
+            calculateResult();
+            quizEl.setAttribute('style', 'display: none');
+            viewResultEl.setAttribute('style', 'display: block;');
+            questions[index-1].setAttribute('style', 'display: none');
+            document.getElementById('final-score').textContent = quizSheet.result;
+            index = 0;
+            return;
+        }
+
+        var state = questions[index].getAttribute('data-state');
+        if(state === 'hidden'){
+            questions[index].setAttribute('data-state', 'visible');
+            questions[index].setAttribute('style', 'display: block;');
+            questions[index-1].setAttribute('data-state', 'hidden');
+            questions[index-1].setAttribute('style', 'display: none;');
+        }
+    }
 });
 
