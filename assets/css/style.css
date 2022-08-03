@@ -121,6 +121,13 @@ input[type='text'] {
     color: var(--main-lightblue);
 }
 
+.view-high-scores-btn {
+    margin: 5px;
+    padding: 5px;
+    background-color: var(--main-hotpink);
+    color: var(--main-lightblue);
+}
+
 .choice-btn {
     background-color: var(--main-hotpink);
     color: var(--main-lightblue);

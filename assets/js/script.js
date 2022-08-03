@@ -6,18 +6,6 @@ var startingBtnEl = document.getElementById('starting-btn');
 
 var timer = 0;
 
-startingBtnEl.addEventListener('click', function() {
-    timer = 75;
-    countdownTimer();
-    var homePage = document.querySelector('.home-page');
-    homePage.setAttribute('style', 'display: none;');
-    quizEl.setAttribute('style', 'display: flex;');
-    setupQuestion();
-    setupViewResult();
-    displayFirstQuestion();
-    
-});
-
 
 var quizSheet = {
     questions: [
@@ -125,7 +113,9 @@ quizEl.addEventListener('click', function(event){
                 calculateResult();
                 quizEl.setAttribute('style', 'display: none');
                 viewResultEl.setAttribute('style', 'display: block;');
+                questions[i-1].setAttribute('style', 'display: none');
                 document.getElementById('final-score').textContent = quizSheet.result;
+                i = 0;
                 return;
             }
 
@@ -212,11 +202,11 @@ function setupViewResult(){
         localStorage.setItem('scores', JSON.stringify(scores));
 
         textField.value = "";
+        quizSheet.result = 0;
         displayResultEl.style.display = 'none';
         viewResultEl.style.display = 'none';
-        timer = 0;
-        setupViewHighScore();
         viewHighScoreEl.style.display = 'block';
+        setupViewHighScore();
 });
 
     viewResultEl.append(heading, paragraph);
@@ -230,21 +220,55 @@ function setupViewHighScore(){
     document.getElementsByTagName('header')[0].style.display = 'none';
     var heading = document.createElement('h1');
     heading.textContent = 'High Scores';
+    heading.setAttribute('style', 'text-align: center;');
     var orderListEl = document.createElement('ol');
     orderListEl.setAttribute('class', 'scores-list');
-    var listEl = document.createElement('li');
     var goBackButton = document.createElement('input');
     goBackButton.setAttribute('type', 'button');
     goBackButton.setAttribute('value', 'Go Back');
+    goBackButton.setAttribute('class', 'view-high-scores-btn');
     var clearHighScoreButton = document.createElement('input');
     clearHighScoreButton.setAttribute('type', 'button');
     clearHighScoreButton.setAttribute('value', 'Clear High Scores');
+    clearHighScoreButton.setAttribute('class', 'view-high-scores-btn');
+
+    var scoresList = JSON.parse(localStorage.getItem('scores'));
+    
+    for (var i = 0; i < scores.score.length; i++){
+        
+        for(var j = 0; j <= Object.values('scoresList').values.length; j++){
+            
+            var list = document.createElement('li');
+            list.textContent = scoresList.score[i][j].toUpperCase() + " - " + scoresList.score[i][j+1];
+            orderListEl.append(list);
+        }   
+        
+    }
 
     viewHighScoreEl.append(heading,orderListEl);
     viewHighScoreEl.append(goBackButton, clearHighScoreButton);
 
-    var scores = JSON.parse(localStorage.getItem('scores'));;
-    console.log(scores);
+    goBackButton.addEventListener('click', function(){
+        viewHighScoreEl.style.display = 'none';
+        document.getElementsByTagName('header')[0].style.display = 'flex';
+        document.getElementsByClassName('home-page')[0].style.display = 'block';
+        document.getElementById('timer-display').textContent = '0';
+
+        quizEl.innerHTML = "";
+        viewResultEl.innerHTML = "";
+        viewHighScoreEl.innerHTML = "";
+    });
+
+    clearHighScoreButton.addEventListener('click', function(){
+        localStorage.clear();
+        for (var i = 0; i <= scores.score.length-1; i++){
+            for(var j = 0; j < Object.values('scoresList').values.length; j++){
+                scores.score.pop();
+            }   
+            
+        }
+        orderListEl.innerHTML="";
+    });
 
 }
 
@@ -255,5 +279,20 @@ document.getElementsByClassName('view-high-scores')[0].addEventListener('click',
     displayResultEl.style.display = 'none';
     viewHighScoreEl.style.display = 'block';
     setupViewHighScore();
+});
+
+startingBtnEl.addEventListener('click', function() {
+    timer = 75;
+    quizSheet.result = 0;
+    quizSheet.correctCounter = 0;
+    quizSheet.incorrectCounter = 0;
+    countdownTimer();
+    var homePage = document.querySelector('.home-page');
+    homePage.setAttribute('style', 'display: none;');
+    quizEl.setAttribute('style', 'display: flex;');
+    setupQuestion();
+    setupViewResult();
+    displayFirstQuestion();
+    
 });
 
