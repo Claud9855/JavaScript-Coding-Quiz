@@ -1,12 +1,13 @@
 var quizEl = document.getElementById('quiz');
 var displayResultEl = document.getElementById('display-result');
 var viewResultEl = document.getElementById('view-result');
-var viewHighScoreEl = document.getElementById('view-high-score');
+var viewHighScoreEl = document.getElementById('view-high-scores');
 var startingBtnEl = document.getElementById('starting-btn');
 
-var timer = 75;
+var timer = 0;
 
 startingBtnEl.addEventListener('click', function() {
+    timer = 75;
     countdownTimer();
     var homePage = document.querySelector('.home-page');
     homePage.setAttribute('style', 'display: none;');
@@ -36,8 +37,12 @@ var quizSheet = {
     answers: [3, 3, 4, 3, 4],
     result: 0,
     correctCounter: 0,
+    incorrectCounter: 0,
     increaseCounter: function(){
         ++this.correctCounter;
+    },
+    increaseIncorrectCounter: function(){
+        ++this.incorrectCounter;
     }
 };
 
@@ -107,7 +112,11 @@ quizEl.addEventListener('click', function(event){
             else{
                 displayResultEl.innerHTML = '<h1>Wrong</h1>'
                 displayResultEl.style.display = 'flex';
+                quizSheet.increaseIncorrectCounter();
                 timer -= 10;
+                if(quizOver()){
+                    alert("You used up all of your time! Quiz Over!");
+                }
             }
 
             if(i === quizSheet.questions.length){
@@ -130,6 +139,19 @@ quizEl.addEventListener('click', function(event){
         }
     });
 
+function quizOver(){
+    if(timer <= 0){
+        clearInterval(timerCountdown);
+        calculateResult();
+        quizEl.setAttribute('style', 'display: none');
+        viewResultEl.setAttribute('style', 'display: block;');
+        document.getElementById('final-score').textContent = quizSheet.result;
+        return true;
+    }
+    return false;
+
+}
+
 function displayFirstQuestion(){
     var question = document.getElementsByClassName('question')[0];
 
@@ -143,8 +165,22 @@ function displayFirstQuestion(){
 
 function calculateResult(){
     var correctCount = quizSheet.correctCounter;
+    var incorrectCount = quizSheet.incorrectCounter;
+    var penaltyPoints  = incorrectCount * 10;
     var numberOfQuestions = quizSheet.questions.length;
-    quizSheet.result = Math.floor((correctCount / numberOfQuestions) * 100);
+    var result = Math.floor((correctCount / numberOfQuestions) * 100);
+    if(result === 0){
+        quizSheet.result = result;
+    }
+    else{
+        if((result - penaltyPoints) < 0){
+            quizSheet.result = 0;
+        }
+        else{
+            quizSheet.result = (result - penaltyPoints);
+        }
+        
+    }
 }
 
 
@@ -173,10 +209,14 @@ function setupViewResult(){
         userResult.score = quizSheet.result;
 
         scores.score.push([userResult.intitials, userResult.score]);
+        localStorage.setItem('scores', JSON.stringify(scores));
 
         textField.value = "";
-
-        console.log(scores.score);
+        displayResultEl.style.display = 'none';
+        viewResultEl.style.display = 'none';
+        timer = 0;
+        setupViewHighScore();
+        viewHighScoreEl.style.display = 'block';
 });
 
     viewResultEl.append(heading, paragraph);
@@ -187,7 +227,33 @@ function setupViewResult(){
 
 
 function setupViewHighScore(){
+    document.getElementsByTagName('header')[0].style.display = 'none';
+    var heading = document.createElement('h1');
+    heading.textContent = 'High Scores';
     var orderListEl = document.createElement('ol');
+    orderListEl.setAttribute('class', 'scores-list');
     var listEl = document.createElement('li');
+    var goBackButton = document.createElement('input');
+    goBackButton.setAttribute('type', 'button');
+    goBackButton.setAttribute('value', 'Go Back');
+    var clearHighScoreButton = document.createElement('input');
+    clearHighScoreButton.setAttribute('type', 'button');
+    clearHighScoreButton.setAttribute('value', 'Clear High Scores');
+
+    viewHighScoreEl.append(heading,orderListEl);
+    viewHighScoreEl.append(goBackButton, clearHighScoreButton);
+
+    var scores = JSON.parse(localStorage.getItem('scores'));;
+    console.log(scores);
+
 }
+
+document.getElementsByClassName('view-high-scores')[0].addEventListener('click', function(){
+    quizEl.style.display = 'none';
+    document.getElementsByClassName('home-page')[0].style.display = 'none';
+    viewResultEl.style.display = 'none';
+    displayResultEl.style.display = 'none';
+    viewHighScoreEl.style.display = 'block';
+    setupViewHighScore();
+});
 

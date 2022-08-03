@@ -99,6 +99,10 @@ hr.underline {
     flex-direction: column;
     align-items: flex-start;
 }
+
+.scores-list {
+    background-color: bisque;
+}
 #quiz {
     display: none;
 }
